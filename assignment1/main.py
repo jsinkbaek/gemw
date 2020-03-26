@@ -15,19 +15,15 @@ with open(path_to_data+'fnames', 'r') as f:
 # fnames.append(['GaiaSource_6714230465835878784_6917528443525529728.csv'])
 
 
-# par = np.ma.empty([])
-# ra = np.ma.array([])
-# dec = np.ma.array([])
-# pmra = np.ma.array([])
-# pmdec = np.ma.array([])
-# rvel = np.ma.array([])
 i = 0
 lfnames = len(fnames)
 for name in fnames:
+    # Read a data file
     F = Table.read(path_to_data+name[0], include_names=['parallax', 'ra', 'dec', 'pmra',
                                                         'pmdec', 'radial_velocity'],
                    format='csv')
     if i == 0:
+        # Initialize arrays
         par = np.ma.empty((F['parallax'].size, lfnames))
         ra = np.ma.empty((F['ra'].size, lfnames))
         dec = np.ma.empty((F['dec'].size, lfnames))
@@ -36,6 +32,7 @@ for name in fnames:
         rvel = np.ma.empty((F['radial_velocity'].size, lfnames))
 
     else:
+        # Check if array lengthening must be implemented to accomodate new data
         if F['parallax'].size > par[:, i-1].size:
             print('Warning, array lengthening done, very slow')
             par_temp = np.ma.empty_like(par, shape=(F['parallax'].size, lfnames))
@@ -57,8 +54,9 @@ for name in fnames:
             pmra = np.ma.copy(pmra_temp)
             rvel = np.ma.copy(rvel_temp)
 
-        # stackarr = np.ma.empty_like(par, shape=(par[:, i].size, i+1))
+            del par_temp, ra_temp, dec_temp, pmra_temp, rvel_temp
 
+    # Place data from file into arrays
     par[0:F['parallax'].size, i] = F['parallax']
     ra[0:F['ra'].size, i] = F['ra']
     dec[0:F['dec'].size, i] = F['dec']
