@@ -10,6 +10,97 @@ import time as tm
 import seaborn as sns
 
 
+def uvw_hist(u, v, w, d, bins=50, dlims=((0, 100), (100, 1000), (1000, 80000)), ncols=2, brange=(-500, 500)):
+    # Collapse into 1-D array
+    u = u.ravel()
+    v = v.ravel()
+    w = w.ravel()
+    d = d.ravel()
+
+    # Find NaN values
+    nan_list = np.isnan(u) + np.isnan(v) + np.isnan(w) + np.isnan(d)
+
+    # Remove NaN values
+    u, v, w, d = u[~nan_list], v[~nan_list], w[~nan_list], d[~nan_list]
+
+    # Create figure and axes
+    fig = plt.figure()
+    axu0 = fig.add_subplot(331)
+    axu1 = fig.add_subplot(332)
+    axu2 = fig.add_subplot(333)
+    axv0 = fig.add_subplot(334)
+    axv1 = fig.add_subplot(335)
+    axv2 = fig.add_subplot(336)
+    axw0 = fig.add_subplot(337)
+    axw1 = fig.add_subplot(338)
+    axw2 = fig.add_subplot(339)
+    plt.rcParams.update({'font.size': 20})
+
+    # Make histograms
+    lim = dlims[0]
+    idx = np.where((d > lim[0]) & (d < lim[1]))
+    axu0.hist(u[idx], bins=bins, range=brange)
+    axv0.hist(v[idx], bins=bins, range=brange)
+    axw0.hist(w[idx], bins=bins, range=brange)
+
+    lim = dlims[1]
+    idx = np.where((d > lim[0]) & (d < lim[1]))
+    axu1.hist(u[idx], bins=bins, range=brange)
+    axv1.hist(v[idx], bins=bins, range=brange)
+    axw1.hist(w[idx], bins=bins, range=brange)
+
+    lim = dlims[2]
+    idx = np.where((d > lim[0]) & (d < lim[1]))
+    axu2.hist(u[idx], bins=bins, range=brange)
+    axv2.hist(v[idx], bins=bins, range=brange)
+    axw2.hist(w[idx], bins=bins, range=brange)
+
+    # Make it pretty
+    axu0.ticklabel_format(axis='y', style='sci', scilimits=(0, 0))
+    axu1.ticklabel_format(axis='y', style='sci', scilimits=(0, 0))
+    axu2.ticklabel_format(axis='y', style='sci', scilimits=(0, 0))
+    axv0.ticklabel_format(axis='y', style='sci', scilimits=(0, 0))
+    axv1.ticklabel_format(axis='y', style='sci', scilimits=(0, 0))
+    axv2.ticklabel_format(axis='y', style='sci', scilimits=(0, 0))
+    axw0.ticklabel_format(axis='y', style='sci', scilimits=(0, 0))
+    axw1.ticklabel_format(axis='y', style='sci', scilimits=(0, 0))
+    axw2.ticklabel_format(axis='y', style='sci', scilimits=(0, 0))
+    # axu0.set_xlabel('U (km/s)', fontsize=20)
+    # axu1.set_xlabel('U (km/s)', fontsize=20)
+    axw0.set_xlabel('km/s', fontsize=20)
+    axw1.set_xlabel('km/s', fontsize=20)
+    axw2.set_xlabel('km/s', fontsize=20)
+    axu0.set_ylabel('U', fontsize=20)
+    axv0.set_ylabel('V', fontsize=20)
+    axw0.set_ylabel('W', fontsize=20)
+    axu0.set_xticklabels([])
+    axu1.set_xticklabels([])
+    axu2.set_xticklabels([])
+    axv0.set_xticklabels([])
+    axv1.set_xticklabels([])
+    axv2.set_xticklabels([])
+    axu0x2 = axu0.twiny()
+    axu1x2 = axu1.twiny()
+    axu2x2 = axu2.twiny()
+    axu0x2.set_xlabel('(' + str(dlims[0][0]) + ', ' + str(dlims[0][1]) + ') pc', fontsize=20)
+    axu1x2.set_xlabel('(' + str(dlims[1][0]) + ', ' + str(dlims[1][1]) + ') pc', fontsize=20)
+    axu2x2.set_xlabel('(' + str(dlims[2][0]) + ', ' + str(dlims[2][1]) + ') pc', fontsize=20)
+    axu0x2.set_xticks([])
+    axu1x2.set_xticks([])
+    axu2x2.set_xticks([])
+    axu0.tick_params(labelsize=17)
+    axu1.tick_params(labelsize=17)
+    axu2.tick_params(labelsize=17)
+    axv0.tick_params(labelsize=17)
+    axv1.tick_params(labelsize=17)
+    axv2.tick_params(labelsize=17)
+    axw0.tick_params(labelsize=17)
+    axw1.tick_params(labelsize=17)
+    axw2.tick_params(labelsize=17)
+
+    plt.show()
+
+
 def uvw_histograms(u, v, w, d, bins=50, dlims=((0, 100), (100, 500)), ncols=2, brange=(-500, 500)):
     # Collapse into 1-D array
     u = u.ravel()
@@ -36,18 +127,6 @@ def uvw_histograms(u, v, w, d, bins=50, dlims=((0, 100), (100, 500)), ncols=2, b
         ax2i.hist(v_i, bins=bins, range=brange)
         ax3i.hist(w_i, bins=bins, range=brange)
 
-        # ax1i.set_xlabel('(' + str(lim[0]) + ', ' + str(lim[1]) + ') pc', fontsize=20)
-        # ax2i.set_xlabel('(' + str(lim[0]) + ', ' + str(lim[1]) + ') pc', fontsize=20)
-        # ax3i.set_xlabel('(' + str(lim[0]) + ', ' + str(lim[1]) + ') pc', fontsize=20)
-        # sax1y = ax1i.secondary_yaxis('right')
-        # sax1y.set_ylabel('(' + str(lim[0]) + ', ' + str(lim[1]) + ') pc', fontsize=20)
-        # sax1y.axes.get_yaxis().set_ticks([])
-        # sax2y = ax2i.secondary_yaxis('right')
-        # sax2y.set_ylabel('(' + str(lim[0]) + ', ' + str(lim[1]) + ') pc', fontsize=20)
-        # sax2y.axes.get_yaxis().set_ticks([])
-        # sax3y = ax3i.secondary_yaxis('right')
-        # sax3y.set_ylabel('(' + str(lim[0]) + ', ' + str(lim[1]) + ') pc', fontsize=20)
-        # sax3y.axes.get_yaxis().set_ticks([])
         ax12y = ax1i.twinx()
         ax12y.set_ylabel('(' + str(lim[0]) + ', ' + str(lim[1]) + ') pc', fontsize=20)
         ax12y.set_yticks([])
@@ -456,9 +535,7 @@ if False:
     phi_distr_plot(phi_rad, bins=50)
 
 
-uvw_histograms(U, V, W, dist.value, bins=100, brange=(-350, 350), dlims=((0, 50), (50, 100),
-                                                                         (100, 200), (200, 400),
-                                                                         (400, 1000), (1000, 80000)))
+uvw_hist(U, V, W, dist.value, bins=100, brange=(-350, 350), dlims=((0, 100), (100, 1000), (1000, 80000)))
 #vt_plot(vT_kms, R_kpc)
 # cylinder_plot(x, y, z, -X_GC_sun.value, -0, -Z_GC_sun.value, W)
 
