@@ -26,6 +26,7 @@ def uvw_histograms(u, v, w, d, bins=50, dlims=((0, 100), (100, 500)), ncols=2, b
     fig1, ax1 = plt.subplots(nrows=int(np.ceil(len(dlims) / ncols)), ncols=ncols)
     fig2, ax2 = plt.subplots(nrows=int(np.ceil(len(dlims) / ncols)), ncols=ncols)
     fig3, ax3 = plt.subplots(nrows=int(np.ceil(len(dlims) / ncols)), ncols=ncols)
+    plt.rcParams.update({'font.size': 20})
     num = range(0, len(dlims))
     for (i, ax1i, ax2i, ax3i) in zip(num, ax1.flat, ax2.flat, ax3.flat):
         lim = dlims[i]
@@ -35,9 +36,31 @@ def uvw_histograms(u, v, w, d, bins=50, dlims=((0, 100), (100, 500)), ncols=2, b
         ax2i.hist(v_i, bins=bins, range=brange)
         ax3i.hist(w_i, bins=bins, range=brange)
 
-        ax1i.set_xlabel('(' + str(lim[0]) + ', ' + str(lim[1]) + ') pc')
-        ax2i.set_xlabel('(' + str(lim[0]) + ', ' + str(lim[1]) + ') pc')
-        ax3i.set_xlabel('(' + str(lim[0]) + ', ' + str(lim[1]) + ') pc')
+        # ax1i.set_xlabel('(' + str(lim[0]) + ', ' + str(lim[1]) + ') pc', fontsize=20)
+        # ax2i.set_xlabel('(' + str(lim[0]) + ', ' + str(lim[1]) + ') pc', fontsize=20)
+        # ax3i.set_xlabel('(' + str(lim[0]) + ', ' + str(lim[1]) + ') pc', fontsize=20)
+        # sax1y = ax1i.secondary_yaxis('right')
+        # sax1y.set_ylabel('(' + str(lim[0]) + ', ' + str(lim[1]) + ') pc', fontsize=20)
+        # sax1y.axes.get_yaxis().set_ticks([])
+        # sax2y = ax2i.secondary_yaxis('right')
+        # sax2y.set_ylabel('(' + str(lim[0]) + ', ' + str(lim[1]) + ') pc', fontsize=20)
+        # sax2y.axes.get_yaxis().set_ticks([])
+        # sax3y = ax3i.secondary_yaxis('right')
+        # sax3y.set_ylabel('(' + str(lim[0]) + ', ' + str(lim[1]) + ') pc', fontsize=20)
+        # sax3y.axes.get_yaxis().set_ticks([])
+        ax12y = ax1i.twinx()
+        ax12y.set_ylabel('(' + str(lim[0]) + ', ' + str(lim[1]) + ') pc', fontsize=20)
+        ax12y.set_yticks([])
+        ax22y = ax2i.twinx()
+        ax22y.set_ylabel('(' + str(lim[0]) + ', ' + str(lim[1]) + ') pc', fontsize=20)
+        ax22y.set_yticks([])
+        ax32y = ax3i.twinx()
+        ax32y.set_ylabel('(' + str(lim[0]) + ', ' + str(lim[1]) + ') pc', fontsize=20)
+        ax32y.set_yticks([])
+
+        ax1i.ticklabel_format(axis='y', style='sci', scilimits=(0, 0))
+        ax2i.ticklabel_format(axis='y', style='sci', scilimits=(0, 0))
+        ax3i.ticklabel_format(axis='y', style='sci', scilimits=(0, 0))
 
     fig1.text(0.5, 0.04, 'U (km/s)', ha='center', va='center')
     fig2.text(0.5, 0.04, 'V (km/s)', ha='center', va='center')
@@ -432,10 +455,11 @@ if False:
 
     phi_distr_plot(phi_rad, bins=50)
 
-    uvw_histograms(U, V, W, dist.value, bins=100, brange=(-350, 350), dlims=((0, 50), (50, 100),
-                                                                             (100, 200), (200, 400),
-                                                                             (400, 1000), (1000, 80000)))
-vt_plot(vT_kms, R_kpc)
+
+uvw_histograms(U, V, W, dist.value, bins=100, brange=(-350, 350), dlims=((0, 50), (50, 100),
+                                                                         (100, 200), (200, 400),
+                                                                         (400, 1000), (1000, 80000)))
+#vt_plot(vT_kms, R_kpc)
 # cylinder_plot(x, y, z, -X_GC_sun.value, -0, -Z_GC_sun.value, W)
 
 
