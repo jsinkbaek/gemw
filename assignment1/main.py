@@ -67,6 +67,7 @@ def phi_distr_plot(phi, bins=50):
 def vt_plot(vT, R):
     from scipy.interpolate import interp1d
     from scipy.signal import savgol_filter
+    from scipy.signal import decimate
 
     # Collapse into 1-D array
     vT = vT.ravel()
@@ -88,18 +89,42 @@ def vt_plot(vT, R):
 
     # Interpolate
     rlin = np.linspace(R_lim.min(), R_lim.max(), 1000)
+    rlin2 = np.linspace(R_lim.min(), R_lim.max(), 2000)
+    rlin3 = np.linspace(R_lim.min(), R_lim.max(), 10000)
+    rlin4 = np.linspace(R_lim.min(), R_lim.max(), R_lim.size)
     itp = interp1d(R_lim, sT)
 
     # Smooth
     window_size, poly_order = 101, 3
+    wz2 = 201
+    wz3 = 501
     vt_sg = savgol_filter(itp(rlin), window_size, poly_order)
+    vt_sg2 = savgol_filter(itp(rlin2), wz2, poly_order)
+    vt_sg3 = savgol_filter(itp(rlin2), window_size, poly_order)
+    vt_sg4 = savgol_filter(itp(rlin3), wz3, poly_order)
+
+    # Try downsampling (decimating)
+    vt_ds = decimate(itp(rlin4), q=10)
+    vt_ds = decimate(vt_ds, q=10)
+    vt_ds = decimate(vt_ds, q=10)
+    vt_ds = decimate(vt_ds, q=10)
+    rlin_ds = np.linspace(R_lim.min(), R_lim.max(), vt_ds.size)
 
     # Plot
-    plt.plot(R_lim, sT, '*', markersize=2, rasterized=True)
-    plt.plot(rlin, vt_sg, 'k')
+    plt.figure()
+    plt.plot(R_lim, sT, '*', markersize=1.5, rasterized=True, label='_nolegend_')
+    plt.plot(rlin_ds, vt_ds, 'k', linewidth=1.5, rasterized=True)
+    plt.plot(rlin, vt_sg, 'm-.', linewidth=1.5, rasterized=True)
+    plt.plot(rlin2, vt_sg3, 'r--', linewidth=1.5, rasterized=True)
+    plt.plot(rlin2, vt_sg2, 'y--', linewidth=1.5, rasterized=True)
+    plt.plot(rlin3, vt_sg4, 'g-.', linewidth=1.5, rasterized=True)
     plt.xlabel('Galactocentric radius [kpc]')
-    plt.ylabel('Rotation speed [km/s]')
+    plt.ylabel('Transverse speed [km/s]')
     plt.ylim([-10, 2000])
+    plt.legend(['Decimation downsampling by a factor 30', 'Itp to 1000 points, savgol_filter windowsize 101',
+                'Itp to 2000 points, savgol_filter wsize 101', 'Itp to 2000 points, savgol_filter wsize 201',
+                'Itp to 10000 points, savgol_filter wsize 501'], loc=2)
+
     plt.show()
     # plt.savefig('/data/astronomy/gaia/dr2/vt.pdf', dpi=300)
     # plt.close()
