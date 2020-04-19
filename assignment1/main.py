@@ -10,6 +10,18 @@ import time as tm
 import seaborn as sns
 
 
+def z_dist(z, lims=(0, 5), nbins=50):
+    z = z.ravel()
+    nan_list = np.isnan(z)
+    z = z[~nan_list]
+    idx = np.where((z < lims[1]) & (z > lims[0]))
+    z = z[idx]
+
+    plt.figure()
+    plt.hist(np.abs(z), bins=nbins, range=lims)
+    plt.show()
+
+
 def uvw_hist(u, v, w, d, bins=50, dlims=((0, 100), (100, 1000), (1000, 80000)), ncols=2, brange=(-500, 500)):
     # Collapse into 1-D array
     u = u.ravel()
@@ -491,14 +503,25 @@ plt.ioff()
 
 if False:
     plt.figure()
-    plt.plot(x, y, '.', markersize=2, rasterized=True)
+    plt.plot(x, y, '.', markersize=0.1, rasterized=True)
     # sns.set_palette(sns.color_palette('hls', 8))
-    plt.plot(-X_GC_sun, 0, 'b*', markersize=8)
+    plt.plot(-X_GC_sun, 0, 'b*', markersize=5)
     plt.xlim([-40, 40])
     plt.ylim([-40, 40])
     plt.xlabel('X kpc')
     plt.ylabel('Y kpc')
-    plt.savefig('/data/astronomy/gaia/dr2/xy.pdf', dpi=300)
+    plt.savefig('/data/astronomy/gaia/dr2/xy3.pdf', dpi=300)
+    plt.close()
+
+    plt.figure()
+    plt.plot(x, y, '.', markersize=0.05, rasterized=True)
+    # sns.set_palette(sns.color_palette('hls', 8))
+    plt.plot(-X_GC_sun, 0, 'b*', markersize=2)
+    plt.xlim([-300, 700])
+    plt.ylim([-500, 500])
+    plt.xlabel('X kpc')
+    plt.ylabel('Y kpc')
+    plt.savefig('/data/astronomy/gaia/dr2/xy4.pdf', dpi=300)
     plt.close()
 
     plt.figure()
@@ -513,17 +536,6 @@ if False:
     plt.close()
 
     plt.figure()
-    plt.plot(x, y, '.', markersize=2, rasterized=True)
-    # sns.set_palette(sns.color_palette('hls', 8))
-    plt.plot(-X_GC_sun, 0, 'b*', markersize=8)
-    plt.xlim([-300, 700])
-    plt.ylim([-500, 500])
-    plt.xlabel('X kpc')
-    plt.ylabel('Y kpc')
-    plt.savefig('/data/astronomy/gaia/dr2/xy2.pdf', dpi=300)
-    plt.close()
-
-    plt.figure()
     plt.plot(dist_lsr / 1000, d_gc, 'r*', markersize=2, rasterized=True)
     plt.xlabel('Parallax distance in kpc')
     plt.ylabel('Cartesian distance in kpc')
@@ -535,10 +547,11 @@ if False:
     phi_distr_plot(phi_rad, bins=50)
 
 
-uvw_hist(U, V, W, dist.value, bins=100, brange=(-350, 350), dlims=((0, 100), (100, 1000), (1000, 80000)))
+# uvw_hist(U, V, W, dist.value, bins=100, brange=(-350, 350), dlims=((0, 100), (100, 1000), (1000, 80000)))
 #vt_plot(vT_kms, R_kpc)
 # cylinder_plot(x, y, z, -X_GC_sun.value, -0, -Z_GC_sun.value, W)
 
+z_dist(z)
 
 
 
